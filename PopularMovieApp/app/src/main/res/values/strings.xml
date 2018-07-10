@@ -33,5 +33,7 @@
     <string name="header_overview">Overview</string>
     <string name="button_retry">RETRY</string>
     <string name="not_available">Not available</string>
+    <string name="author">Author nick</string>
+    <string name="Trailers">Trailers:</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package com.example.android.popularmovieapp.utilities;
 
 import com.example.android.popularmovieapp.ui.Movie;
+import com.example.android.popularmovieapp.ui.Reviews;
 import com.example.android.popularmovieapp.ui.TrailersVideoMovie;
 
 import org.json.JSONArray;
@@ -29,6 +30,12 @@ public final class OpenMovieJsonUtils {
     private static final String TAG_TRAILERS_ID = "id";
     private static final String TAG_TRAILERS_NAME = "name";
     private static final String TAG_TRAILERS_KEY = "key";
+
+    private static final String TAG_REVIEWS_RESULTS = "results";
+
+    //Reviews information
+    private static final String TAG_REVIEWS_AUTHOR = "author";
+    private static final String TAG_REVIEWS_CONTENT = "content";
 
     public static Movie[] moviesDataFromJson(String movieJsonStr) throws JSONException {
 
@@ -66,5 +73,21 @@ public final class OpenMovieJsonUtils {
             trailers[i].importName(infoTrailers.getString(TAG_TRAILERS_NAME));
         }
         return trailers;
+    }
+
+    public static Reviews[] reviewsDataFromJson(String reviewsJsonStr) throws JSONException {
+
+        JSONObject jsonObject = new JSONObject(reviewsJsonStr);
+        JSONArray resultArray = jsonObject.getJSONArray(TAG_REVIEWS_RESULTS);
+
+        Reviews[] reviews = new Reviews[resultArray.length()];
+        for (int i = 0; i < resultArray.length(); i++) {
+            reviews[i] = new Reviews();
+
+            JSONObject infoTrailers = resultArray.getJSONObject(i);
+            reviews[i].importAuthor(infoTrailers.getString(TAG_REVIEWS_AUTHOR));
+            reviews[i].importContent(infoTrailers.getString(TAG_REVIEWS_CONTENT));
+        }
+        return reviews;
     }
 }

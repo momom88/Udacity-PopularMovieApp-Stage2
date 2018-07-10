@@ -24,6 +24,7 @@ import com.example.android.popularmovieapp.FetchMovieAsyncTask;
 import com.example.android.popularmovieapp.R;
 import com.example.android.popularmovieapp.utilities.NetworkUtils;
 import com.example.android.popularmovieapp.utilities.OnTaskCompleted;
+import com.example.android.popularmovieapp.utilities.OnTaskCompletedReviews;
 import com.example.android.popularmovieapp.utilities.OnTaskCompletedTrailers;
 import com.example.android.popularmovieapp.utilities.OpenMovieJsonUtils;
 import com.squareup.picasso.Picasso;
@@ -46,7 +47,9 @@ public class DetailsMovieFragment extends Fragment {
     // LogTag
     private final String LOG = DetailsMovieFragment.class.getSimpleName();
 
-    ListView mListViewTrailers;
+    private ListView mListViewTrailers;
+
+    private ListView mListViewReviews;
 
     //id to trailers and reviews
     private String mId;
@@ -71,6 +74,7 @@ public class DetailsMovieFragment extends Fragment {
         TextView averageView = rootView.findViewById(R.id.vote_average_content);
         TextView overviewView = rootView.findViewById(R.id.overview_content);
         mListViewTrailers = (ListView) rootView.findViewById(R.id.listview_trailers);
+        mListViewReviews = (ListView) rootView.findViewById(R.id.listview_reviews);
 
         Intent intent = getActivity().getIntent();
         movie = intent.getParcelableExtra(getString(R.string.parcel_movie));
@@ -110,6 +114,7 @@ public class DetailsMovieFragment extends Fragment {
             }
         } else {
             TrailersFromApi();
+            ReviewsFromApi();
             Log.i(LOG, "else");
         }
         mListViewTrailers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -132,6 +137,23 @@ public class DetailsMovieFragment extends Fragment {
             context.startActivity(appIntent);
         } catch (ActivityNotFoundException ex) {
             context.startActivity(webIntent);
+        }
+    }
+
+    private void ReviewsFromApi() {
+        ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService
+                (Context.CONNECTIVITY_SERVICE);
+        assert connMgr != null;
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            OnTaskCompletedReviews tastFinish = new OnTaskCompletedReviews() {
+                @Override
+                public void onTaskCompletedReviews(Reviews[] reviews) {
+                    mListViewReviews.setAdapter(new ReviewsAdapter(getActivity(), reviews));
+                }
+            };
+            ReviewsQueryTask task = new ReviewsQueryTask(tastFinish);
+            task.execute(mId);
         }
     }
 
@@ -187,6 +209,44 @@ public class DetailsMovieFragment extends Fragment {
         @Override
         protected void onPostExecute(TrailersVideoMovie[] trailersVideoMovies) {
             mListener.onTaskCompletedTrailers(trailersVideoMovies);
+        }
+    }
+
+    public class ReviewsQueryTask extends AsyncTask<String, Void, Reviews[]> {
+
+        //listener
+        private final OnTaskCompletedReviews mListener;
+
+        public ReviewsQueryTask(OnTaskCompletedReviews tastFinish) {
+            mListener = tastFinish;
+        }
+
+        @Override
+        protected Reviews[] doInBackground(String... strings) {
+            URL url = NetworkUtils.buildUrlReview(strings);
+
+            String reviewsJsonStr = null;
+            try {
+                String response = NetworkUtils.getResponseFromHttpUrl(url);
+                reviewsJsonStr = response;
+                Log.i(LOG, "response" + response);
+            } catch (IOException e) {
+                Log.e(LOG, "Error build url", e);
+            }
+            try {
+                // Make sense of the JSON data
+                Log.i(LOG, "openMovieJsonUtils");
+                return OpenMovieJsonUtils.reviewsDataFromJson(reviewsJsonStr);
+            } catch (JSONException e) {
+                Log.e(LOG, e.getMessage(), e);
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Reviews[] reviews) {
+            mListener.onTaskCompletedReviews(reviews);
         }
     }
 }

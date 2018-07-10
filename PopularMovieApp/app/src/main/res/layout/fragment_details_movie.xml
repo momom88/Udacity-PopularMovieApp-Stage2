@@ -97,11 +97,26 @@
                 android:text="@string/not_available"
                 android:textSize="@dimen/textSize_normal" />
 
+            <TextView
+                android:id="@+id/trailers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/textSize_normal"
+                android:text="@string/Trailers"
+                android:textStyle="bold"
+                android:layout_below="@+id/overview_content"/>
+
             <ListView
                 android:id="@+id/listview_trailers"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/overview_content"/>
+                android:layout_below="@+id/trailers"/>
+
+            <ListView
+                android:id="@+id/listview_reviews"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/listview_trailers"/>
         </RelativeLayout>
     </ScrollView>
 </FrameLayout>

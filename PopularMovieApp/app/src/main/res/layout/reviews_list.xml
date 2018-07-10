@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dp16">
+
+    <TextView
+        android:id="@+id/reviews_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="@dimen/TextSize_small"
+        android:textStyle="bold"
+        tools:text="Author name: bla bla"/>
+
+    <TextView
+        android:id="@+id/reviews_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/TextSize_small"
+        tools:text="Author name: bla blaaa"/>
+
+</LinearLayout>

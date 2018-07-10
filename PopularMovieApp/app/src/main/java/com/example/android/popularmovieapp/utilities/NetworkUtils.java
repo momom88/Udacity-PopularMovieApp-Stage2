@@ -22,6 +22,8 @@ public final class NetworkUtils {
     private static final String MOVIE_API = "api_key";
     //movie trailers
     private static final String MOVIE_TRAILERS = "videos";
+    //reviews
+    private static final String MOVIE_REVIEW = "reviews";
 
     public static URL buildUrlMovie(String[] parameters) {
         Uri.Builder movieBuilder = Uri.parse(MOVIE_DB_URL).buildUpon()
@@ -52,6 +54,22 @@ public final class NetworkUtils {
         }
 
     }
+
+    public static URL buildUrlReview(String[] parameters){
+        Uri.Builder reviewBuilder = Uri.parse(MOVIE_DB_URL).buildUpon()
+                .appendPath(parameters[0])
+                .appendPath(MOVIE_REVIEW)
+                .appendQueryParameter(MOVIE_API, movieApiKey);
+        try {
+            URL reviewBuilderURL = new URL(reviewBuilder.toString());
+            Log.i(LOG, "URL: " + reviewBuilderURL);
+            return reviewBuilderURL;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
